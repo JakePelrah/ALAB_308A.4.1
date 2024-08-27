@@ -22,6 +22,19 @@ const API_KEY = "";
  * This function should execute immediately.
  */
 
+(async function initialLoad() {
+    const res = await fetch('https://api.thecatapi.com/v1/breeds');
+    const json = await res.json();
+    json.forEach(element => {
+        const option = document.createElement('option')
+        option.id = element.id
+        option.textContent = element.name
+        option.setAttribute('value', element.id)
+        breedSelect.appendChild(option)
+    });
+    
+})()
+
 /**
  * 2. Create an event handler for breedSelect that does the following:
  * - Retrieve information on the selected breed from the cat API using fetch().
