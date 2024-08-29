@@ -4,7 +4,12 @@ const API_BASE_URL = 'https://api.thecatapi.com/v1';
 const API_IMAGE_URL = 'images/search?limit=10&breed_ids='
 const headers = { 'x-api-key': API_KEY }
 
-console.log(API_KEY)
+// create paragraph in infoDump for breed description
+const infoDump = document.getElementById('infoDump')
+const infoPara = document.createElement('p')
+infoDump.appendChild(infoPara)
+
+
 export async function initialLoad() {
     // fetch cat data as json
     const catBreeds = await fetch(`${API_BASE_URL}/breeds`)
@@ -55,10 +60,12 @@ export async function handleBreedChange(e) {
     const breed = e.target.value
     const breedName = e.target.options[e.target.selectedIndex].text
 
+    infoPara.textContent = ''
+
     //fetch breed data
     if (breed) {
 
-        const data = await fetch(`${API_BASE_URL}/${API_IMAGE_URL}${breed}`, headers)
+        const data = await fetch(`${API_BASE_URL}/${API_IMAGE_URL}${breed}`, { headers })
             .then(res => res.json())
 
         // clear the carousel
@@ -72,5 +79,9 @@ export async function handleBreedChange(e) {
 
         // start the carousel
         Carousel.start()
+
+        // create new description paragraph
+        infoPara.textContent = data[0].breeds[0].description
+      
     }
 }
