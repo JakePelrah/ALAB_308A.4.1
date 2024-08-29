@@ -4,12 +4,27 @@ const API_BASE_URL = 'https://api.thecatapi.com/v1';
 const API_IMAGE_URL = 'images/search?limit=10&breed_ids='
 const headers = { 'x-api-key': API_KEY }
 
+
 // create paragraph in infoDump for breed description
 const infoDump = document.getElementById('infoDump')
 const infoPara = document.createElement('p')
 infoDump.appendChild(infoPara)
 
 
+/**
+ * Asynchronously loads cat breed data from an API and populates a select element with options.
+ * 
+ * This function fetches a list of cat breeds from the API, appends a default option to prompt users,
+ * and then adds options for each breed to a select element.
+ * 
+ * @async
+ * @function initialLoad
+ * @throws {Error} Throws an error if the fetch request fails or if there is an issue processing the data.
+ * 
+ * @example
+ * // Usage
+ * initialLoad();
+ */
 export async function initialLoad() {
     // fetch cat data as json
     const catBreeds = await fetch(`${API_BASE_URL}/breeds`)
@@ -27,12 +42,19 @@ export async function initialLoad() {
 }
 
 /**
- * Creates an HTML <option> element with the specified attributes.
- *
- * @param {string} id - The ID to set for the <option> element.
- * @param {string} value - The value attribute to set for the <option> element.
- * @param {string} text - The text content to display for the <option> element.
- * @returns {HTMLOptionElement} The newly created <option> element.
+ * Creates a new `<option>` element with the specified attributes.
+ * 
+ * @param {string} id - The ID to set for the `<option>` element.
+ * @param {string} value - The value attribute to set for the `<option>` element.
+ * @param {string} text - The text content to display for the `<option>` element.
+ * @returns {HTMLSelectElement} The created `<option>` element.
+ * 
+ * @example
+ * // Create an option with id '1', value '1', and text 'Option 1'
+ * const option = createOption('1', '1', 'Option 1');
+ * 
+ * // Append the option to a select element
+ * document.querySelector('select').appendChild(option);
  */
 export function createOption(id, value, text) {
 
@@ -47,12 +69,19 @@ export function createOption(id, value, text) {
     return defaultOption
 }
 
+
 /**
- * Handles the change event for a breed selection. Fetches and logs breed data
- * from an external API based on the selected breed.
- *
- * @param {Event} e - The event object representing the change event.
- * @returns {Promise<void>} A promise that resolves when the breed data has been logged.
+ * Handles the change event for the breed selection dropdown.
+ * 
+ * This function is triggered when a user selects a different breed from a dropdown. It fetches breed-specific data from the API,
+ * clears the existing carousel, populates it with new images related to the selected breed, and updates the description paragraph.
+ * 
+ * @param {Event} e - The change event object from the breed selection dropdown.
+ * @returns {Promise<void>} A promise that resolves when the function has completed its operations.
+ * 
+ * @example
+ * // Example usage with an event listener
+ * breedSelect.addEventListener('change', handleBreedChange);
  */
 export async function handleBreedChange(e) {
 
@@ -82,6 +111,5 @@ export async function handleBreedChange(e) {
 
         // create new description paragraph
         infoPara.textContent = data[0].breeds[0].description
-      
     }
 }
