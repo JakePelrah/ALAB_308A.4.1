@@ -1,6 +1,7 @@
 import * as Carousel from "./Carousel.js";
 
-const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCpP3QlBp";
+// const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCpP3QlBp";
+console.log(process.env)
 const API_BASE_URL = 'https://api.thecatapi.com/v1';
 const API_IMAGE_URL = 'images/search?limit=10&breed_ids='
 const headers = { 'x-api-key': API_KEY }
@@ -70,7 +71,7 @@ export async function handleBreedChange(e) {
             const item = Carousel.createCarouselItem(img.url, `Picture of a ${breedName}`, img.id)
             Carousel.appendCarousel(item)
         }
-        
+
         // start the carousel
         Carousel.start()
     }
