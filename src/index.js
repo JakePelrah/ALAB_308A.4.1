@@ -23,6 +23,8 @@ const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCp
  */
 
 (async function initialLoad() {
+
+  // fetch cat data as json
   const catBreeds = await fetch('https://api.thecatapi.com/v1/breeds')
     .then(res => res.json())
 
@@ -52,16 +54,7 @@ const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCp
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
 
-breedSelect.addEventListener('change', async (e) => {
-  const breed = e.target.value
-  if (breed) {
-    const data = await fetch(`https://api.thecatapi.com/v1/breeds/${breed}`)
-      .then(res => res.json())
-    console.log(data)
-  }
-
-
-})
+breedSelect.onchange = helper.handleBreedChange
 
 
 /**
