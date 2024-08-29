@@ -1,5 +1,5 @@
 import * as Carousel from "./Carousel.js";
-
+import * as helper from './helpers.js'
 // The breed selection input element.
 const breedSelect = document.getElementById("breedSelect");
 // The information section div element.
@@ -10,7 +10,7 @@ const progressBar = document.getElementById("progressBar");
 const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 // Step 0: Store your API key here for reference and easy access.
-const API_KEY = "";
+const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCpP3QlBp";
 
 
 /**
@@ -23,22 +23,17 @@ const API_KEY = "";
  */
 
 (async function initialLoad() {
-  const json = await fetch('https://api.thecatapi.com/v1/breeds')
+  const catBreeds = await fetch('https://api.thecatapi.com/v1/breeds')
     .then(res => res.json())
 
-  //default option
-  const defaultOption = document.createElement('option')
-  defaultOption.textContent = 'Please select a breed'
-  defaultOption.value = ''
+  // append default option
+  const defaultOption = helper.createOption('default', '', 'Please select a breed')
   breedSelect.appendChild(defaultOption)
 
-  // populate breed select with cat data
-  json.forEach(element => {
-    const option = document.createElement('option')
-    option.id = element.id
-    option.textContent = element.name
-    option.setAttribute('value', element.id)
-    breedSelect.appendChild(option)
+  // append breed options
+  catBreeds.forEach(breed => {
+    const breedOption = helper.createOption(breed.id, breed.id, breed.name)
+    breedSelect.appendChild(breedOption)
   });
 })();
 
