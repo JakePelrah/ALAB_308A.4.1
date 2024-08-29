@@ -77,3 +77,10 @@ body {
     height: 17em;
   }
 }
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}

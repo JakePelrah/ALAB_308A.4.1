@@ -10,6 +10,10 @@ const infoDump = document.getElementById('infoDump')
 const infoPara = document.createElement('p')
 infoDump.appendChild(infoPara)
 
+// progress bar
+const progressBar = document.getElementById("progressBar");
+
+
 // axios setup
 axios.defaults.headers.common['x-api-key'] = API_KEY
 
@@ -164,12 +168,15 @@ export async function axiosHandleBreedChange(e) {
     const breed = e.target.value
     const breedName = e.target.options[e.target.selectedIndex].text
 
+    progressBar.classList.add('notransition')
+    progressBar.style.width = '0%'
+
     infoPara.textContent = ''
 
     //fetch breed data
     if (breed) {
 
-        const { data: breedData } = await axios.get(`${API_BASE_URL}/${API_IMAGE_URL}${breed}`)
+        const { data: breedData } = await axios.get(`${API_BASE_URL}/${API_IMAGE_URL}${breed}`, { onDownloadProgress: progress })
 
         // clear the carousel
         Carousel.clear()
@@ -187,4 +194,11 @@ export async function axiosHandleBreedChange(e) {
         const { description } = breedData[0].breeds
         infoPara.textContent = description
     }
+}
+
+
+function progress(progressEvent) {
+    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    progressBar.classList.remove('notransition')
+    progressBar.style.width = `${percentCompleted}%`;
 }
