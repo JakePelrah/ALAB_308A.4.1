@@ -9,10 +9,6 @@ const progressBar = document.getElementById("progressBar");
 // The get favourites button element.
 const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
-// Step 0: Store your API key here for reference and easy access.
-const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCpP3QlBp";
-const API_BASE_URL = 'https://api.thecatapi.com/v1';
-
 /**
  * 1. Create an async function "initialLoad" that does the following:
  * - Retrieve a list of breeds from the cat API using fetch().
@@ -22,22 +18,7 @@ const API_BASE_URL = 'https://api.thecatapi.com/v1';
  * This function should execute immediately.
  */
 
-(async function initialLoad() {
-
-  // fetch cat data as json
-  const catBreeds = await fetch(`${API_BASE_URL}/breeds`)
-    .then(res => res.json())
-
-  // append default option
-  const defaultOption = helper.createOption('default', '', 'Please select a breed')
-  breedSelect.appendChild(defaultOption)
-
-  // append breed options
-  catBreeds.forEach(breed => {
-    const breedOption = helper.createOption(breed.id, breed.id, breed.name)
-    breedSelect.appendChild(breedOption)
-  });
-})();
+onload = helper.initialLoad
 
 /**
  * 2. Create an event handler for breedSelect that does the following:
@@ -56,7 +37,6 @@ const API_BASE_URL = 'https://api.thecatapi.com/v1';
 
 breedSelect.onchange = helper.handleBreedChange
 
-
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
  */
@@ -70,7 +50,7 @@ breedSelect.onchange = helper.handleBreedChange
  *   send it manually with all of your requests! You can also set a default base URL!
  */
 
-axios.get(`${API_BASE_URL}/breeds`).then(console.log)
+// axios.get(`${API_BASE_URL}/breeds`).then(console.log)
 
 /**
  * 5. Add axios interceptors to log the time between request and response to the console.
