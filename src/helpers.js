@@ -10,6 +10,32 @@ const infoDump = document.getElementById('infoDump')
 const infoPara = document.createElement('p')
 infoDump.appendChild(infoPara)
 
+// axios setup
+axios.defaults.headers.common['x-api-key'] = API_KEY
+
+// request interceptor
+axios.interceptors.request.use(request => {
+    request.metadata = request.metadata || {};
+    request.metadata.startTime = new Date().getTime();
+    return request;
+});
+
+// response interceptor
+axios.interceptors.response.use(
+    (response) => {
+        response.config.metadata.endTime = new Date().getTime();
+        response.config.metadata.durationInMS = response.config.metadata.endTime - response.config.metadata.startTime;
+
+        console.log(`Request took ${response.config.metadata.durationInMS} milliseconds.`)
+        return response;
+    },
+    (error) => {
+        error.config.metadata.endTime = new Date().getTime();
+        error.config.metadata.durationInMS = error.config.metadata.endTime - error.config.metadata.startTime;
+
+        console.log(`Request took ${error.config.metadata.durationInMS} milliseconds.`)
+        throw error;
+    });
 
 /**
  * Asynchronously loads cat breed data from an API and populates a select element with options.
@@ -111,5 +137,54 @@ export async function handleBreedChange(e) {
 
         // create new description paragraph
         infoPara.textContent = data[0].breeds[0].description
+    }
+}
+
+
+
+export async function axiosInitialLoad() {
+
+    // fetch cat data as json
+    const { data: catBreeds } = await axios.get(`${API_BASE_URL}/breeds`)
+
+    // append default option
+    const defaultOption = createOption('default', '', 'Please select a breed')
+    breedSelect.appendChild(defaultOption)
+
+    // append breed options
+    catBreeds.forEach(breed => {
+        const breedOption = createOption(breed.id, breed.id, breed.name)
+        breedSelect.appendChild(breedOption)
+    });
+}
+
+export async function axiosHandleBreedChange(e) {
+
+    // extract breed from target option
+    const breed = e.target.value
+    const breedName = e.target.options[e.target.selectedIndex].text
+
+    infoPara.textContent = ''
+
+    //fetch breed data
+    if (breed) {
+
+        const { data: breedData } = await axios.get(`${API_BASE_URL}/${API_IMAGE_URL}${breed}`)
+
+        // clear the carousel
+        Carousel.clear()
+
+        // populate the carousel with cat images
+        for (const img of breedData) {
+            const item = Carousel.createCarouselItem(img.url, `Picture of a ${breedName}`, img.id)
+            Carousel.appendCarousel(item)
+        }
+
+        // start the carousel
+        Carousel.start()
+
+        // create new description paragraph
+        const { description } = breedData[0].breeds
+        infoPara.textContent = description
     }
 }
