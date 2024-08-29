@@ -1,3 +1,10 @@
+const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCpP3QlBp";
+const API_BASE_URL = 'https://api.thecatapi.com/v1';
+const headers = { 'x-api-key': API_KEY }
+import * as Carousel from "./Carousel.js";
+
+/**
+
 /**
  * Creates an HTML <option> element with the specified attributes.
  *
@@ -33,8 +40,18 @@ export async function handleBreedChange(e) {
 
     //fetch breed data
     if (breed) {
-        const data = await fetch(`https://api.thecatapi.com/v1/breeds/${breed}`)
+        const data = await fetch(`${API_BASE_URL}/images/search?limit=10&breed_ids=${breed}`, headers)
             .then(res => res.json())
-        console.log(data)
+
+        // clear the carousel
+        Carousel.clear()
+
+        // populate the carousel with cat images
+        for (const img of data) {
+            const item = Carousel.createCarouselItem(img.url, `Picture of a ${breed}`, img.id)
+            Carousel.appendCarousel(item)
+        }
+        // start the carousel
+        Carousel.start()
     }
 }

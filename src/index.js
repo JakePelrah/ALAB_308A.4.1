@@ -1,5 +1,5 @@
-import * as Carousel from "./Carousel.js";
 import * as helper from './helpers.js'
+
 // The breed selection input element.
 const breedSelect = document.getElementById("breedSelect");
 // The information section div element.
@@ -11,7 +11,7 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 // Step 0: Store your API key here for reference and easy access.
 const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCpP3QlBp";
-
+const API_BASE_URL = 'https://api.thecatapi.com/v1';
 
 /**
  * 1. Create an async function "initialLoad" that does the following:
@@ -25,7 +25,7 @@ const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCp
 (async function initialLoad() {
 
   // fetch cat data as json
-  const catBreeds = await fetch('https://api.thecatapi.com/v1/breeds')
+  const catBreeds = await fetch(`${API_BASE_URL}/breeds`)
     .then(res => res.json())
 
   // append default option
@@ -69,6 +69,9 @@ breedSelect.onchange = helper.handleBreedChange
  *   by setting a default header with your API key so that you do not have to
  *   send it manually with all of your requests! You can also set a default base URL!
  */
+
+axios.get(`${API_BASE_URL}/breeds`).then(console.log)
+
 /**
  * 5. Add axios interceptors to log the time between request and response to the console.
  * - Hint: you already have access to code that does this!
