@@ -1,12 +1,11 @@
 import * as Carousel from "./Carousel.js";
-
+import { API_KEY } from "../apiKey.js";
 // const API_KEY = "live_4MYP3nZ58BfE8rmxZuATDsNPzOcz28uVAdAwyrNmdtPWtnVIYNBWu4wuCpP3QlBp";
-console.log(process.env)
 const API_BASE_URL = 'https://api.thecatapi.com/v1';
 const API_IMAGE_URL = 'images/search?limit=10&breed_ids='
 const headers = { 'x-api-key': API_KEY }
 
-
+console.log(API_KEY)
 export async function initialLoad() {
     // fetch cat data as json
     const catBreeds = await fetch(`${API_BASE_URL}/breeds`)
