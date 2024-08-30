@@ -1,4 +1,4 @@
-import { setFavorite, deleteFavorite } from "./helpers.js";
+import { setFavorite, deleteFavorite } from "./index.js";
 
 
 export function createCarouselItem(imgSrc, imgAlt, imgId) {
