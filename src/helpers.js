@@ -182,7 +182,7 @@ function updateProgress(progressEvent) {
 
 async function loadFavorites() {
 
-    const favorites =  await getFavorites()
+    const favorites = await getFavorites()
 
     // get all favorite buttons
     const favButtons = document.querySelectorAll('.favorite-button')
@@ -200,22 +200,36 @@ async function loadFavorites() {
 
 async function getFavorites() {
     const { data: favorites } = await axios.get('https://api.thecatapi.com/v1/favourites')
-    console.log(favorites)
     return favorites
 }
 
-async function deleteFavorite(favoriteId) {
+export async function deleteFavorite(favoriteId) {
     axios.delete(`https://api.thecatapi.com/v1/favourites/${favoriteId}`)
-      .then(console.log)
-  }
-  
+        .then(() => {
+            const favBtn = document.querySelector(`[data-fav-id='${favoriteId}']`)
+            favBtn.classList.remove('favorite')
+            delete favBtn.dataset.favId
+        })
+}
 
 async function deleteAllFavorites() {
     const favorites = await getFavorites()
-    for(const favorite of favorites){
+    for (const favorite of favorites) {
         deleteFavorite(favorite.id)
     }
-} 
+}
+
+export async function setFavorite(imgId) {
+    const response = await axios.post('https://api.thecatapi.com/v1/favourites', { 'image_id': imgId, 'sub_id': '508' })
+    const { message, id: favId } = response.data
+
+    if (message === 'SUCCESS') {
+        const favBtn = document.querySelector(`[data-img-id='${imgId}']`)
+        favBtn.dataset.favId = favId
+        favBtn.classList.add('favorite')
+    }
+}
+
 
 /**
  * 9. Test your favorite() function by creating a getfavorites() function.

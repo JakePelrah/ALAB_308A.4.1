@@ -1,3 +1,6 @@
+import { setFavorite, deleteFavorite } from "./helpers.js";
+
+
 export function createCarouselItem(imgSrc, imgAlt, imgId) {
   const template = document.querySelector("#carouselItemTemplate");
   const clone = template.content.firstElementChild.cloneNode(true);
@@ -13,18 +16,9 @@ export function createCarouselItem(imgSrc, imgAlt, imgId) {
 
     // delete favorite
     if (favBtn.classList.contains('favorite')) {
-
       deleteFavorite(favBtn.dataset.favId)
-      favBtn.classList.remove('favorite')
-      delete favBtn.dataset.favId
-
     } else {
-      setFavorite(imgId).then((favId) => {
-        if (favId) {
-          favBtn.dataset.favId = favId
-          favBtn.classList.add('favorite')
-        }
-      })
+      setFavorite(imgId)
     }
 
   });
@@ -90,19 +84,6 @@ export function start() {
   }
 }
 
-async function setFavorite(imgId) {
-  const response = await axios.post('https://api.thecatapi.com/v1/favourites', { 'image_id': imgId, 'sub_id': '508' })
-  const { message, id } = response.data
-  if (message === 'SUCCESS') {
-    return id
-  }
-}
 
-
-
-async function deleteFavorite(favoriteId) {
-  axios.delete(`https://api.thecatapi.com/v1/favourites/${favoriteId}`)
-    .then(console.log)
-}
 
 
