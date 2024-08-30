@@ -2,7 +2,16 @@ import * as Carousel from "./Carousel.js";
 import { API_KEY } from "../apiKey.js";
 const API_BASE_URL = 'https://api.thecatapi.com/v1';
 const API_IMAGE_URL = 'images/search?limit=10&breed_ids='
+const API_FAV_URL = 'https://api.thecatapi.com/v1/favourites'
 const headers = { 'x-api-key': API_KEY }
+
+// axios setup
+axios.defaults.headers.common['x-api-key'] = API_KEY
+axios.defaults.onDownloadProgress = updateProgress
+
+
+const deleteFavBtn = document.getElementById('delFavBtn')
+deleteFavBtn.onclick = deleteAllFavorites
 
 
 // create paragraph in infoDump for breed description
@@ -13,9 +22,6 @@ infoDump.appendChild(infoPara)
 // progress bar
 const progressBar = document.getElementById("progressBar");
 
-// axios setup
-axios.defaults.headers.common['x-api-key'] = API_KEY
-axios.defaults.onDownloadProgress = updateProgress
 
 // request interceptor
 axios.interceptors.request.use(request => {
@@ -35,10 +41,10 @@ axios.interceptors.response.use(
     (response) => {
 
         document.body.style.cursor = ''
-        
+
         response.config.metadata.endTime = new Date().getTime();
         response.config.metadata.durationInMS = response.config.metadata.endTime - response.config.metadata.startTime;
-        
+
         console.log(`Request took ${response.config.metadata.durationInMS} milliseconds.`)
         return response;
     },
@@ -112,6 +118,8 @@ export async function handleBreedChange(e) {
         // create new description paragraph
         infoPara.textContent = data[0].breeds[0].description
     }
+    // load favorites
+    loadFavorites()
 }
 
 
@@ -160,6 +168,7 @@ export async function axiosHandleBreedChange(e) {
         // create new description paragraph
         const { description } = breedData[0].breeds
         infoPara.textContent = description
+        loadFavorites()
     }
 }
 
@@ -169,3 +178,51 @@ function updateProgress(progressEvent) {
     progressBar.classList.remove('notransition')
     progressBar.style.width = `${percentCompleted}%`;
 }
+
+
+async function loadFavorites() {
+
+    const favorites =  await getFavorites()
+
+    // get all favorite buttons
+    const favButtons = document.querySelectorAll('.favorite-button')
+
+    // populate favorites
+    for (const button of favButtons) {
+        const favorite = favorites.find(obj => obj.image_id === button.dataset.imgId)
+        if (favorite) {
+            button.dataset.favId = favorite.id
+            button.classList.add('favorite')
+        }
+    }
+}
+
+
+async function getFavorites() {
+    const { data: favorites } = await axios.get('https://api.thecatapi.com/v1/favourites')
+    console.log(favorites)
+    return favorites
+}
+
+async function deleteFavorite(favoriteId) {
+    axios.delete(`https://api.thecatapi.com/v1/favourites/${favoriteId}`)
+      .then(console.log)
+  }
+  
+
+async function deleteAllFavorites() {
+    const favorites = await getFavorites()
+    for(const favorite of favorites){
+        deleteFavorite(favorite.id)
+    }
+} 
+
+/**
+ * 9. Test your favorite() function by creating a getfavorites() function.
+ * - Use Axios to get all of your favorites from the cat API.
+ * - Clear the carousel and display your favorites when the button is clicked.
+ *  - You will have to bind this event listener to getFavoritesBtn yourself.
+ *  - Hint: you already have all of the logic built for building a carousel.
+ *    If that isn't in its own function, maybe it should be so you don't have to
+ *    repeat yourself in this section.
+ */
