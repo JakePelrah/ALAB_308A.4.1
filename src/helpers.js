@@ -22,18 +22,23 @@ axios.interceptors.request.use(request => {
 
     progressBar.classList.add('notransition')
     progressBar.style.width = '0%'
+    document.body.style.cursor = 'progress'
 
     request.metadata = request.metadata || {};
     request.metadata.startTime = new Date().getTime();
     return request;
 });
 
+
 // response interceptor
 axios.interceptors.response.use(
     (response) => {
+
+        document.body.style.cursor = ''
+        
         response.config.metadata.endTime = new Date().getTime();
         response.config.metadata.durationInMS = response.config.metadata.endTime - response.config.metadata.startTime;
-
+        
         console.log(`Request took ${response.config.metadata.durationInMS} milliseconds.`)
         return response;
     },
