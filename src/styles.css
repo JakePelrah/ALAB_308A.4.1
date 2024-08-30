@@ -12,9 +12,9 @@ body {
   top: 0;
   left: 0;
   width: 0%;
-  height: 15px;
-  background-color: green;
-  border-bottom: 1px solid black;
+  height: 1.5em;
+  background: linear-gradient(217deg, rgba(27, 255, 2, 0.8), rgb(185, 247, 168) 90%);
+  border-bottom: .05em solid black;
 }
 
 .favourite-button {

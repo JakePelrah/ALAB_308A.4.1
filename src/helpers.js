@@ -13,12 +13,16 @@ infoDump.appendChild(infoPara)
 // progress bar
 const progressBar = document.getElementById("progressBar");
 
-
 // axios setup
 axios.defaults.headers.common['x-api-key'] = API_KEY
+axios.defaults.onDownloadProgress = updateProgress
 
 // request interceptor
 axios.interceptors.request.use(request => {
+
+    progressBar.classList.add('notransition')
+    progressBar.style.width = '0%'
+
     request.metadata = request.metadata || {};
     request.metadata.startTime = new Date().getTime();
     return request;
@@ -41,20 +45,7 @@ axios.interceptors.response.use(
         throw error;
     });
 
-/**
- * Asynchronously loads cat breed data from an API and populates a select element with options.
- * 
- * This function fetches a list of cat breeds from the API, appends a default option to prompt users,
- * and then adds options for each breed to a select element.
- * 
- * @async
- * @function initialLoad
- * @throws {Error} Throws an error if the fetch request fails or if there is an issue processing the data.
- * 
- * @example
- * // Usage
- * initialLoad();
- */
+
 export async function initialLoad() {
     // fetch cat data as json
     const catBreeds = await fetch(`${API_BASE_URL}/breeds`)
@@ -71,21 +62,7 @@ export async function initialLoad() {
     });
 }
 
-/**
- * Creates a new `<option>` element with the specified attributes.
- * 
- * @param {string} id - The ID to set for the `<option>` element.
- * @param {string} value - The value attribute to set for the `<option>` element.
- * @param {string} text - The text content to display for the `<option>` element.
- * @returns {HTMLSelectElement} The created `<option>` element.
- * 
- * @example
- * // Create an option with id '1', value '1', and text 'Option 1'
- * const option = createOption('1', '1', 'Option 1');
- * 
- * // Append the option to a select element
- * document.querySelector('select').appendChild(option);
- */
+
 export function createOption(id, value, text) {
 
     // create a new option
@@ -100,19 +77,7 @@ export function createOption(id, value, text) {
 }
 
 
-/**
- * Handles the change event for the breed selection dropdown.
- * 
- * This function is triggered when a user selects a different breed from a dropdown. It fetches breed-specific data from the API,
- * clears the existing carousel, populates it with new images related to the selected breed, and updates the description paragraph.
- * 
- * @param {Event} e - The change event object from the breed selection dropdown.
- * @returns {Promise<void>} A promise that resolves when the function has completed its operations.
- * 
- * @example
- * // Example usage with an event listener
- * breedSelect.addEventListener('change', handleBreedChange);
- */
+
 export async function handleBreedChange(e) {
 
     // extract breed from target option
@@ -168,15 +133,12 @@ export async function axiosHandleBreedChange(e) {
     const breed = e.target.value
     const breedName = e.target.options[e.target.selectedIndex].text
 
-    progressBar.classList.add('notransition')
-    progressBar.style.width = '0%'
-
     infoPara.textContent = ''
 
     //fetch breed data
     if (breed) {
 
-        const { data: breedData } = await axios.get(`${API_BASE_URL}/${API_IMAGE_URL}${breed}`, { onDownloadProgress: progress })
+        const { data: breedData } = await axios.get(`${API_BASE_URL}/${API_IMAGE_URL}${breed}`)
 
         // clear the carousel
         Carousel.clear()
@@ -197,7 +159,7 @@ export async function axiosHandleBreedChange(e) {
 }
 
 
-function progress(progressEvent) {
+function updateProgress(progressEvent) {
     const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
     progressBar.classList.remove('notransition')
     progressBar.style.width = `${percentCompleted}%`;
