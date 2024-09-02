@@ -1,5 +1,5 @@
 import * as Carousel from "./Carousel.js";
-import { API_KEY } from "../apiKey.js";
+import { API_KEY } from "./apiKey.js";
 const API_BASE_URL = 'https://api.thecatapi.com/v1';
 const API_IMAGE_URL = 'images/search?limit=10&breed_ids='
 const API_FAV_URL = 'https://api.thecatapi.com/v1/favourites'
